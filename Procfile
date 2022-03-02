@@ -1,1 +1,1 @@
-web: java -jar ./LaserTagGame.jar
+web: java -jar /LaserTagGame.jar
