@@ -21,16 +21,19 @@ public class PlayerDataReceiver {
     
     // Create IO for sockets
     in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+    out = new PrintWriter(clientSocket.getOutputStream(), true);
     
     // Read data continuously from client
     String inputLine;
     while ((inputLine = in.readLine()) != null) {
-      if (".".equals(inputLine)) {
-          out.println("good bye");
+      if ("close".equals(inputLine)) {
+          out.println("closing connection");
           break;
       }
       System.out.println(inputLine);
+      out.println("OK");
     }
+    stop();
   }
 
   public void stop() throws IOException {
@@ -44,11 +47,13 @@ public class PlayerDataReceiver {
     PlayerDataReceiver server = new PlayerDataReceiver();
     
     // Start server socket
-    try {
-      server.start(8686);
-    } catch (IOException e) {
-      System.out.println("Unable to start server socket.");
-      e.printStackTrace();
+    while(true) {
+      try {
+        server.start(8686);
+      } catch (IOException e) {
+        System.out.println("Unable to start server socket.");
+        e.printStackTrace();
+      }
     }
   }
 }
