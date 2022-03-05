@@ -1,9 +1,13 @@
+package laserTag.GUI;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import javax.swing.JTable;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.io.IOException;
+
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.event.TableModelEvent;
@@ -26,11 +30,14 @@ public class EntryTerminal extends JPanel implements TableModelListener {
   private JTable tableGreen;
   DefaultTableModel greenModel;
   DefaultTableModel redModel;
+  LaserTagGame client;
 
   /**
    * A JPanel containing player entry screen components
    */
-  public EntryTerminal() {
+  public EntryTerminal(LaserTagGame client) {
+    this.client = client;
+    
     // Add UI components
     initialize();
 
@@ -123,23 +130,15 @@ public class EntryTerminal extends JPanel implements TableModelListener {
     if (row < 0) {
       return;
     }
-
-    /*
-     * TODO link data to database
-     * When a table is changed, this method is called with information about the change that occurred.
-     * Store the information in the database.
-     * The information is set up in the following way:
-     * 
-     * row: (int) The row of the cell that was changed
-     * column: (int) The column of the cell that was changed
-     * redTeam: (boolean) True if the table that was changed is the red team's (false would presumably be the green team)
-     * input: (String) The string that was entered to cause the change
-     */
-
-    // For testing purposes
-    System.out.println("Table change detected!\n" +
-        "Cell changed: (" + row + ", " + column +
-        ")\nRed Team: " + redTeam +
-        "\nString changed: \"" + input + "\"");
+    
+    try {
+      client.sendPlayerData("Table change detected!\n" +
+          "Cell changed: (" + row + ", " + column +
+          ")\nRed Team: " + redTeam +
+          "\nString changed: \"" + input + "\"");
+    } catch (IOException e1) {
+      System.out.println("Unable to send player data to data receiver.");
+      e1.printStackTrace();
+    }
   }
 }
